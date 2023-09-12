@@ -1,4 +1,4 @@
-import Header from './componnets/Header.tsx';
+import Header from '@/components/Header/index.tsx';
 
 function App() {
   return (

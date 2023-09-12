@@ -10,6 +10,13 @@ module.exports = {
   ignorePatterns: ["dist", ".eslintrc.cjs", ""],
   parser: "@typescript-eslint/parser",
   plugins: ["react-refresh"],
+  settings: {
+    'import/resolver': {
+      alias: [
+        ['@', './src'],
+      ],
+    },
+  },  
   rules: {
     "react-refresh/only-export-components": [
       "warn",
@@ -18,7 +25,7 @@ module.exports = {
     "react/jsx-filename-extension": [
       "error",
       {
-        extensions: [".js", ".jsx", ".tsx", ".ts"],
+        extensions: [".js", ".jsx", ".tsx", ".ts", ".svg"],
       },
     ],
     "import/no-extraneous-dependencies": "off",
