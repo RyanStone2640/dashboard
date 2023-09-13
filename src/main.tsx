@@ -5,7 +5,6 @@ import {
   RouterProvider,
 } from 'react-router-dom';
 import Root from './routes/root.tsx';
-import Test from './routes/test.tsx';
 import './index.css';
 
 const router = createBrowserRouter([
@@ -13,10 +12,10 @@ const router = createBrowserRouter([
     path: '/',
     element: <Root />,
   },
-  {
-    path: 'test',
-    element: <Test />,
-  },
+  // {
+  //   path: 'test',
+  //   element: <Test />,
+  // },
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
