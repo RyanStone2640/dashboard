@@ -1,19 +1,23 @@
 import brand from '@/assets/brand.png';
-import Input from '@/components/UI/Input/index.tsx';
+import Select from '@/components/UI/Select/index.tsx';
 
 function Content() {
   return (
     <div className="mt-2 flex">
-      <div className="max-h-full h-full object-cover">
+      <div>
         <img
-          className="h-full"
           src={brand}
-          alt=""
+          alt="brand"
         />
       </div>
-      <div className="w-full flex justify-center">
-        <h2>人口數、戶數按戶別及性別統計</h2>
-        <Input />
+      <div className=" flex-grow flex flex-col items-center">
+        <h2 className="text-3xl mb-12">人口數、戶數按戶別及性別統計</h2>
+        <div className="flex gap-3">
+          <Select value={[{ label: 'test', value: 'test' }, { label: '1', value: '1' }, { label: '2', value: '2' }]} />
+          {/* <Select />
+          <Select /> */}
+          <button className="bg-slate-600 rounded" type="submit">SUBMIT</button>
+        </div>
       </div>
     </div>
   );
