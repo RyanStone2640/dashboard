@@ -1,5 +1,7 @@
+import cn from '@/utilities/twMerge.ts';
 import arrowDropDon from '@/assets/arrow-drop-down.svg';
 import xMark from '@/assets/xMark.svg';
+import { useState } from 'react';
 
 export type SelectOption = {
   label: string
@@ -7,24 +9,28 @@ export type SelectOption = {
 }
 
 type SelectProps = {
-  value?: SelectOption[] | []
+  options?: SelectOption[] | []
+  selectLabel: string
   onChange: (value: SelectOption | undefined) => void
 }
 
 function Select(props: SelectProps) {
-  const { value: propsVal } = props;
+  const { options, selectLabel, onChange } = props;
+  const [toggle, setToggle] = useState(false);
 
+  const toggleOptionHandler = () => {
+    setToggle((prev) => !prev);
+  }
   return (
     <div
-      // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
       tabIndex={0}
-      className="
-      min-w-5rem  relative border rounded  pt-3 pb-2 px-3 flex gap-4  cursor-pointer
-      before:block before:absolute before:content-['縣/市'] before:text-xs before:-top-2 before:mx-1 before:bg-white
-      focus:border-myColor-purple focus:border-2 focus:before:text-myColor-purple
-    "
+      before-dynamic-value={selectLabel}
+      className={cn(`min-w-5rem  relative border rounded  pt-3 pb-2 px-3 flex gap-4 cursor-pointer
+        before:block before:absolute before:text-xs before:-top-2 before:mx-1 before:bg-white
+        focus:border-myColor-purple focus:border-1 focus: before: text-myColor-purple`, 'before:content-[attr(before-dynamic-value)]')}
+      onClick={toggleOptionHandler}
     >
-      <span className="flex-grow">{propsVal[0]?.label}</span>
+      <span className="flex-grow">{options[0]?.label}</span>
       <div className="flex gap-3">
         <button type="button">
           <img src={xMark} alt="" />
@@ -33,8 +39,12 @@ function Select(props: SelectProps) {
           <img src={arrowDropDon} alt="" />
         </button>
       </div>
-      <ul className="absolute top-10 left-0 rounded w-full max-h-64 overflow-y-auto bg-myColor-#FFFDFD  shadow-lg shadow-slate-300 ">
-        {propsVal?.map((item) => (
+      <ul className={cn(
+        'absolute top-10 left-0 rounded w-full max-h-64 overflow-y-auto bg-myColor-#FFFDFD shadow-lg shadow-slate-300',
+        { hidden: toggle },
+      )}
+      >
+        {options?.map((item) => (
           <li className="mt-3 ml-4" key={item.value}>
             {item?.value}
           </li>
@@ -45,7 +55,7 @@ function Select(props: SelectProps) {
 }
 
 Select.defaultProps = {
-  value: [],
+  options: [],
 };
 
 export default Select;

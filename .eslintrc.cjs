@@ -30,5 +30,7 @@ module.exports = {
     ],
     "import/no-extraneous-dependencies": "off",
     "react/react-in-jsx-scope": 0,
+    "react/no-unknown-property": ["off", { ignore: ["tsx"] }],
+    "jsx-a11y/no-noninteractive-tabindex": "off",
   },
 };
