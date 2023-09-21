@@ -1,25 +1,33 @@
+import { memo } from 'react';
+
 export type OptionProps = {
-  onKeyDown: (e:never) => void
-  onClick: (e:never) => void
+  onClick: () => void
   dataType: string
   children: React.ReactNode
 }
-
-export default function Option(props: OptionProps) {
+function OptionComponent(props: OptionProps) {
   const {
-    onKeyDown,
     onClick,
     dataType,
     children,
   } = props;
+
+  const clickHandler = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    onClick();
+  };
+
+  const keyDownHandler = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    onClick();
+  };
+
   return (
     <li>
       <div
-        role="button"
-        tabIndex={0}
-        className="mt-3 ml-4"
-        onKeyDown={onKeyDown}
-        onClick={onClick}
+        className="pt-3 pl-4"
+        onKeyDown={keyDownHandler}
+        onClick={clickHandler}
         data-type={dataType}
       >
         {children}
@@ -27,3 +35,6 @@ export default function Option(props: OptionProps) {
     </li>
   );
 }
+
+const Option = memo(OptionComponent);
+export default Option;

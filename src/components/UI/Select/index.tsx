@@ -1,54 +1,56 @@
-import { useState } from 'react';
+import React, { memo, useState } from 'react';
 
 import cn from '@/utilities/twMerge.ts';
 import arrowDropDon from '@/assets/arrow-drop-down.svg';
 import xMark from '@/assets/xMark.svg';
 import Option from './option.tsx';
-
-type SelectOption = {
-  label: string
-  value: string | number
-}
-
-type SelectLabel = {
-  name: string
-  value: string
-}
+import { SelectOption, SelectType } from './type.ts';
 
 export type SelectProps = {
   options?: SelectOption[] | []
-  selectLabel: SelectLabel
-  onChange: (e: never) => void
-  value: string
+  selectType: SelectType
+  onChange: (val: SelectOption | undefined) => void
+  selectValue: SelectOption | undefined
 }
 
-function Select(props: SelectProps) {
+function SelectComponent(props: SelectProps) {
   const {
     options,
-    selectLabel,
+    selectType,
     onChange,
-    value,
+    selectValue,
   } = props;
-  const [toggle, setToggle] = useState(false);
+  const [toggle, setToggle] = useState(true);
 
   const toggleOptionHandler = () => {
     setToggle((prev) => !prev);
   };
 
+  const clearOptionHandler = () => {
+    setToggle(true);
+  };
+
+  const clearValueHandler = (e:React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    onChange(undefined);
+  };
+
   return (
     <div
-      role="button"
-      tabIndex={0}
-      before-dynamic-value={selectLabel?.name}
-      className={cn(`min-w-5rem  relative border rounded  pt-3 pb-2 px-3 flex gap-4 cursor-pointer
-        before:block before:absolute before:text-xs before:-top-2 before:mx-1 before:bg-white
-        focus:border-myColor-purple focus:border-1 focus: before: text-myColor-purple`, 'before:content-[attr(before-dynamic-value)]')}
       onKeyDown={toggleOptionHandler}
       onClick={toggleOptionHandler}
+      onBlur={clearOptionHandler}
+      role="button"
+      tabIndex={0}
+      before-dynamic-value={selectType?.name}
+      className={cn(`w-40 h-10  relative border rounded  pt-3 pb-2 px-3 flex gap-4 cursor-pointer
+        before:block before:absolute before:text-xs before:-top-2 before:mx-1 before:bg-white
+        focus:border-myColor-purple focus:border-1 focus:before:text-myColor-purple`, 'before:content-[attr(before-dynamic-value)]')}
+
     >
-      <span className="flex-grow">{value}</span>
+      <span className="flex-grow">{selectValue?.label}</span>
       <div className="flex gap-3">
-        <button type="button">
+        <button className={cn({ hidden: selectValue === undefined })} type="button" onClick={clearValueHandler}>
           <img src={xMark} alt="" />
         </button>
         <button className="pointer-events-none" type="button">
@@ -60,14 +62,13 @@ function Select(props: SelectProps) {
         { hidden: toggle },
       )}
       >
-        {options?.map((item) => (
+        {options?.map((item: SelectOption) => (
           <Option
-            onKeyDown={toggleOptionHandler}
-            onClick={onChange}
-            dataType={selectLabel?.value}
+            onClick={() => { onChange(item); }}
+            dataType={selectType?.value}
             key={item.value}
           >
-            {item?.value}
+            {item.value}
           </Option>
         ))}
       </ul>
@@ -75,8 +76,10 @@ function Select(props: SelectProps) {
   );
 }
 
-Select.defaultProps = {
+SelectComponent.defaultProps = {
   options: [],
 };
+
+const Select = memo(SelectComponent);
 
 export default Select;

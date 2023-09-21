@@ -10,6 +10,7 @@ export default {
         myColor: {
           purple: '#651FFF',
           '#FFFDFD': '#FFFDFD',
+          gray: 'rgba(0, 0, 0, 0.12)',
         },
       },
       margin: {
@@ -25,6 +26,9 @@ export default {
       },
       maxHeight: {
         '7rem': '7rem',
+      },
+      maxWidth: {
+        '10rem': '10rem',
       },
     },
   },
