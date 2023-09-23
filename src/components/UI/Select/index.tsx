@@ -7,6 +7,8 @@ import Option from './option.tsx';
 import { SelectOption, SelectType } from './type.ts';
 
 export type SelectProps = {
+  disabled?: boolean
+  placeholder: string
   options?: SelectOption[] | []
   selectType: SelectType
   onChange: (val: SelectOption | undefined) => void
@@ -15,6 +17,8 @@ export type SelectProps = {
 
 function SelectComponent(props: SelectProps) {
   const {
+    disabled,
+    placeholder,
     options,
     selectType,
     onChange,
@@ -30,27 +34,32 @@ function SelectComponent(props: SelectProps) {
     setToggle(true);
   };
 
-  const clearValueHandler = (e:React.MouseEvent<HTMLButtonElement>) => {
+  const clearValueHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     onChange(undefined);
   };
 
   return (
     <div
+      role="button"
+      tabIndex={0}
       onKeyDown={toggleOptionHandler}
       onClick={toggleOptionHandler}
       onBlur={clearOptionHandler}
-      role="button"
-      tabIndex={0}
+      data-disabled={disabled}
       before-dynamic-value={selectType?.name}
-      className={cn(`w-40 h-10  relative border rounded  pt-3 pb-2 px-3 flex gap-4 cursor-pointer
-        before:block before:absolute before:text-xs before:-top-2 before:mx-1 before:bg-white
-        focus:border-myColor-purple focus:border-1 focus:before:text-myColor-purple`, 'before:content-[attr(before-dynamic-value)]')}
+      className={cn(
+        'w-40 h-10 relative border rounded  pt-3 pb-2 px-3 flex gap-4 cursor-pointer whitespace-nowrap',
+        'before:block before:absolute before:text-xs before:-top-2 before:mx-1 before:bg-white',
+        'focus:border-myColor-#651FFF focus:border-1 focus:before:text-myColor-#651FFF',
+        'before:content-[attr(before-dynamic-value)]',
+        { 'pointer-events-none border-myColor-#B6B6B6 text-myColor-#B6B6B6 before:text-myColor-#B6B6B6': disabled },
+      )}
 
     >
-      <span className="flex-grow">{selectValue?.label}</span>
+      <span data-placeholder={placeholder} className={cn('flex-grow', 'empty:before:content-[attr(data-placeholder)]')}>{selectValue?.label}</span>
       <div className="flex gap-3">
-        <button className={cn({ hidden: selectValue === undefined })} type="button" onClick={clearValueHandler}>
+        <button className={cn({ hidden: selectValue?.value || placeholder })} type="button" onClick={clearValueHandler}>
           <img src={xMark} alt="" />
         </button>
         <button className="pointer-events-none" type="button">
@@ -58,7 +67,7 @@ function SelectComponent(props: SelectProps) {
         </button>
       </div>
       <ul className={cn(
-        'absolute top-10 left-0 rounded w-full max-h-64 overflow-y-auto bg-myColor-#FFFDFD shadow-lg shadow-slate-300',
+        'absolute top-10 left-0 rounded w-full max-h-64 overflow-y-auto z-10 bg-myColor-#FFFDFD shadow-lg shadow-slate-300',
         { hidden: toggle },
       )}
       >
@@ -78,6 +87,7 @@ function SelectComponent(props: SelectProps) {
 
 SelectComponent.defaultProps = {
   options: [],
+  disabled: false,
 };
 
 const Select = memo(SelectComponent);

@@ -8,9 +8,10 @@ export default {
     extend: {
       colors: {
         myColor: {
-          purple: '#651FFF',
+          '#651FFF': '#651FFF',
           '#FFFDFD': '#FFFDFD',
           gray: 'rgba(0, 0, 0, 0.12)',
+          '#B6B6B6': '#B6B6B6',
         },
       },
       margin: {

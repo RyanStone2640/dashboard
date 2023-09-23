@@ -12,26 +12,26 @@ function OptionComponent(props: OptionProps) {
     children,
   } = props;
 
-  const clickHandler = (e: React.MouseEvent<HTMLDivElement>) => {
+  const clickHandler = (e: React.MouseEvent<HTMLLIElement>) => {
     e.stopPropagation();
     onClick();
   };
 
-  const keyDownHandler = (e: React.KeyboardEvent<HTMLDivElement>) => {
+  const keyDownHandler = (e: React.KeyboardEvent<HTMLLIElement>) => {
     e.stopPropagation();
     onClick();
   };
 
   return (
-    <li>
-      <div
-        className="pt-3 pl-4"
-        onKeyDown={keyDownHandler}
-        onClick={clickHandler}
-        data-type={dataType}
-      >
-        {children}
-      </div>
+    <li
+      className="pt-3 pl-4"
+      role="presentation"
+      onKeyDown={keyDownHandler}
+      onClick={clickHandler}
+      data-type={dataType}
+    >
+
+      {children}
     </li>
   );
 }
