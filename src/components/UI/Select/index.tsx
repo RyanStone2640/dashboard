@@ -24,6 +24,7 @@ function SelectComponent(props: SelectProps) {
     onChange,
     selectValue,
   } = props;
+
   const [toggle, setToggle] = useState(true);
 
   const toggleOptionHandler = () => {
@@ -46,7 +47,6 @@ function SelectComponent(props: SelectProps) {
       onKeyDown={toggleOptionHandler}
       onClick={toggleOptionHandler}
       onBlur={clearOptionHandler}
-      data-disabled={disabled}
       before-dynamic-value={selectType?.name}
       className={cn(
         'w-40 h-10 relative border rounded  pt-3 pb-2 px-3 flex gap-4 cursor-pointer whitespace-nowrap',
@@ -73,8 +73,9 @@ function SelectComponent(props: SelectProps) {
       >
         {options?.map((item: SelectOption) => (
           <Option
-            onClick={() => { onChange(item); }}
+            onClick={onChange}
             dataType={selectType?.value}
+            dataOption={item}
             key={item.value}
           >
             {item.value}
