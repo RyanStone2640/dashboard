@@ -3,40 +3,48 @@ import { useCallback, useEffect, useState } from 'react';
 import Select from '@/components/UI/Select/index.tsx';
 import { yearData, cityData, areaData } from '@/data/data.ts';
 import { SelectOption } from '../UI/Select/type.ts';
-
-type City = '臺北市' | '新北市' | '基隆市' | '桃園市' | '新竹縣' | '新竹市' | '苗栗縣' | '臺中市' | '南投縣' | '彰化縣' | '雲林縣' | '嘉義縣' | '嘉義市' | '臺南市' | '高雄市' | '屏東縣' | '宜蘭縣' | '花蓮縣' | '臺東縣' | '澎湖縣' | '金門縣' | '連江縣';
+import { City } from './type.ts';
 
 const yearSelectTypeObj = { name: '年份', value: 'year' };
-const citySelectTypeObj = { name: '縣/市', value: 'year' };
+const citySelectTypeObj = { name: '縣/市', value: 'city' };
 const districtSelectTypeObj = { name: '區', value: 'district' };
 
+type Data = {
+  year: SelectOption,
+  city: SelectOption | undefined,
+  district: SelectOption | undefined,
+}
+
 function Content() {
-  const [year, setYear] = useState<SelectOption | undefined>({ label: '110', value: '110' });
-  const [city, setCity] = useState<SelectOption | undefined>(undefined);
-  const [district, setDistrict] = useState<SelectOption | undefined>(undefined);
+  const [data, setData] = useState<Data>({
+    year: { label: '110', value: '110' },
+    city: undefined,
+    district: undefined,
+  });
   const [districtOptions, setDistrictOptions] = useState<SelectOption[]>([]);
 
-  const changeYearHandler = useCallback((val: SelectOption | undefined) => {
-    setYear(val);
+  const changeHandler = useCallback((val: SelectOption | undefined, type: string) => {
+    setData((prev) => ({
+      ...prev,
+      [type]: val,
+    }));
   }, []);
 
-  const changeCityHandler = useCallback((val: SelectOption | undefined) => {
-    setCity(val);
-    setDistrict(undefined);
-  }, []);
-
-  const changeDistrictHandler = useCallback((val: SelectOption | undefined) => {
-    setDistrict(val);
-  }, []);
+  const submitHandler = async () => {
+    const url = `https://www.ris.gov.tw/rs-opendata/api/v1/datastore/ODRP019/${data.year?.value}?COUNTY=${data.city?.value}&TOWN=${data.district?.value}`;
+    const res = await fetch(url);
+    const resData = await res.json();
+    console.log(resData);
+  };
 
   useEffect(() => {
-    if (city?.value) {
-      const handlerDistrictData = areaData[city?.value as City].map((item) => (
+    if (data.city?.value) {
+      const handlerDistrictData = areaData[data.city?.value as City].map((item) => (
         { label: item, value: item }
       ));
       setDistrictOptions(handlerDistrictData);
     }
-  }, [city?.value]);
+  }, [data.city?.value]);
 
   return (
     <div className=" flex-grow flex flex-col items-center">
@@ -46,25 +54,32 @@ function Content() {
           selectType={yearSelectTypeObj}
           placeholder="請選擇年份"
           options={yearData}
-          onChange={changeYearHandler}
-          selectValue={year}
+          onChange={changeHandler}
+          selectValue={data.year}
         />
         <Select
           selectType={citySelectTypeObj}
           placeholder="請選擇縣/市"
           options={cityData}
-          onChange={changeCityHandler}
-          selectValue={city}
+          onChange={changeHandler}
+          selectValue={data.city}
         />
         <Select
           selectType={districtSelectTypeObj}
-          placeholder={city === undefined ? '請先選擇縣/市' : '請選擇'}
+          placeholder={data.city === undefined ? '請先選擇縣/市' : '請選擇'}
           options={districtOptions}
-          onChange={changeDistrictHandler}
-          selectValue={district}
-          disabled={city === undefined}
+          onChange={changeHandler}
+          selectValue={data.district}
+          disabled={data.city === undefined}
         />
-        <button className="w-20 h-9 pt-3 pb-3 pl-4 pr-4 flex justify-center items-center  bg-myColor-gray rounded" type="submit">SUBMIT</button>
+        <button
+          className="w-20 h-9 pt-3 pb-3 pl-4 pr-4 flex justify-center items-center bg-myColor-gray rounded"
+          type="submit"
+          disabled={!data.year?.value || !data.city?.value || !data.district?.value}
+          onClick={submitHandler}
+        >
+          SUBMIT
+        </button>
       </div>
       <div className="
       relative mt-12 pt-2 pb-2 pl-3 pr-3 border rounded-2xl"

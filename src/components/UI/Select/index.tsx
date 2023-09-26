@@ -4,14 +4,14 @@ import cn from '@/utilities/twMerge.ts';
 import arrowDropDon from '@/assets/arrow-drop-down.svg';
 import xMark from '@/assets/xMark.svg';
 import Option from './option.tsx';
-import { SelectOption, SelectType } from './type.ts';
+import { SelectOption, SelectType, OptionChange } from './type.ts';
 
 export type SelectProps = {
   disabled?: boolean
   placeholder: string
   options?: SelectOption[] | []
   selectType: SelectType
-  onChange: (val: SelectOption | undefined) => void
+  onChange: OptionChange
   selectValue: SelectOption | undefined
 }
 
@@ -37,7 +37,7 @@ function SelectComponent(props: SelectProps) {
 
   const clearValueHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    onChange(undefined);
+    onChange(undefined, selectType.value);
   };
 
   return (
@@ -59,7 +59,7 @@ function SelectComponent(props: SelectProps) {
     >
       <span data-placeholder={placeholder} className={cn('flex-grow', 'empty:before:content-[attr(data-placeholder)]')}>{selectValue?.label}</span>
       <div className="flex gap-3">
-        <button className={cn({ hidden: selectValue?.value || placeholder })} type="button" onClick={clearValueHandler}>
+        <button className={cn({ hidden: !selectValue?.value })} type="button" onClick={clearValueHandler}>
           <img src={xMark} alt="" />
         </button>
         <button className="pointer-events-none" type="button">

@@ -1,8 +1,8 @@
 import { memo } from 'react';
-import { SelectOption } from './type.ts';
+import { SelectOption, OptionChange } from './type.ts';
 
 export type OptionProps = {
-  onClick: (val: SelectOption | undefined) => void
+  onClick: OptionChange
   dataType: string
   children: React.ReactNode
   dataOption: SelectOption
@@ -17,12 +17,12 @@ function OptionComponent(props: OptionProps) {
 
   const clickHandler = (e: React.MouseEvent<HTMLLIElement>) => {
     e.stopPropagation();
-    onClick(dataOption);
+    onClick(dataOption, dataType);
   };
 
   const keyDownHandler = (e: React.KeyboardEvent<HTMLLIElement>) => {
     e.stopPropagation();
-    onClick(dataOption);
+    onClick(dataOption, dataType);
   };
 
   return (
