@@ -74,12 +74,10 @@ function SelectComponent(props: SelectProps) {
         {options?.map((item: SelectOption) => (
           <Option
             onClick={onChange}
-            dataType={selectType?.value}
-            dataOption={item}
+            optionType={selectType?.value}
+            option={item}
             key={item.value}
-          >
-            {item.value}
-          </Option>
+          />
         ))}
       </ul>
     </div>

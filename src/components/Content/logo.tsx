@@ -2,7 +2,7 @@ import brand from '@/assets/brand.png';
 
 function Logo() {
   return (
-    <div className="h-4/5">
+    <div className="w-40">
       <img
         className="h-full"
         src={brand}

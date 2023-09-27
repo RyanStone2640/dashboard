@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import Select from '@/components/UI/Select/index.tsx';
 import { yearData, cityData, areaData } from '@/data/data.ts';
 import { SelectOption } from '../UI/Select/type.ts';
+import Result from './result.tsx';
 import { City } from './type.ts';
 
 const yearSelectTypeObj = { name: '年份', value: 'year' };
@@ -15,17 +16,20 @@ type Data = {
   district: SelectOption | undefined,
 }
 
-function Content() {
+function Search() {
   const [data, setData] = useState<Data>({
     year: { label: '110', value: '110' },
     city: undefined,
     district: undefined,
   });
   const [districtOptions, setDistrictOptions] = useState<SelectOption[]>([]);
+  const [chartData, setChartData] = useState(undefined);
+  const dataString = `${data?.year?.label} ${data?.city?.label} ${data?.district?.label}`;
 
   const changeHandler = useCallback((val: SelectOption | undefined, type: string) => {
     setData((prev) => ({
       ...prev,
+      district: type === 'city' ? undefined : prev.district,
       [type]: val,
     }));
   }, []);
@@ -33,8 +37,21 @@ function Content() {
   const submitHandler = async () => {
     const url = `https://www.ris.gov.tw/rs-opendata/api/v1/datastore/ODRP019/${data.year?.value}?COUNTY=${data.city?.value}&TOWN=${data.district?.value}`;
     const res = await fetch(url);
-    const resData = await res.json();
-    console.log(resData);
+    const { responseData } = await res.json();
+
+    const initialValue = 0;
+
+    const householdSingleMen = responseData.reduce((accumulator, currentValue) => accumulator + (+currentValue.household_single_m), initialValue);
+    const householdSingleWomen = responseData.reduce((accumulator, currentValue) => accumulator + (+currentValue.household_single_f), initialValue);
+    const householdOrdinaryMen = responseData.reduce((accumulator, currentValue) => accumulator + (+currentValue.household_ordinary_m), initialValue);
+    const householdOrdinaryWomen = responseData.reduce((accumulator, currentValue) => accumulator + (+currentValue.household_ordinary_f), initialValue);
+
+    setChartData(
+      {
+        householdSingle: { men: householdSingleMen, women: householdSingleWomen },
+        householdOrdinary: { men: householdOrdinaryMen, women: householdOrdinaryWomen },
+      },
+    );
   };
 
   useEffect(() => {
@@ -86,9 +103,10 @@ function Content() {
       >
         搜尋結果
       </div>
+      <Result chartData={chartData} chartTitle={dataString} />
     </div>
 
   );
 }
 
-export default Content;
+export default Search;

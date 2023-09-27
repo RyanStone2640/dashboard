@@ -3,26 +3,24 @@ import { SelectOption, OptionChange } from './type.ts';
 
 export type OptionProps = {
   onClick: OptionChange
-  dataType: string
-  children: React.ReactNode
-  dataOption: SelectOption
+  optionType: string
+  option: SelectOption
 }
 function OptionComponent(props: OptionProps) {
   const {
     onClick,
-    dataType,
-    children,
-    dataOption,
+    optionType,
+    option,
   } = props;
 
   const clickHandler = (e: React.MouseEvent<HTMLLIElement>) => {
     e.stopPropagation();
-    onClick(dataOption, dataType);
+    onClick(option, optionType);
   };
 
   const keyDownHandler = (e: React.KeyboardEvent<HTMLLIElement>) => {
     e.stopPropagation();
-    onClick(dataOption, dataType);
+    onClick(option, optionType);
   };
 
   return (
@@ -31,10 +29,8 @@ function OptionComponent(props: OptionProps) {
       role="presentation"
       onKeyDown={keyDownHandler}
       onClick={clickHandler}
-      data-option={dataOption}
-      data-type={dataType}
     >
-      {children}
+      {option.label}
     </li>
   );
 }
