@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
+import { Outlet, useNavigate, useParams } from 'react-router-dom';
 
 import Select from '@/components/UI/Select/index.tsx';
 import { yearData, cityData, areaData } from '@/data/data.ts';
+import cn from '@/utilities/twMerge.ts';
 import { SelectOption } from '../UI/Select/type.ts';
-import Result from './result.tsx';
 import { City } from './type.ts';
 
 const yearSelectTypeObj = { name: '年份', value: 'year' };
@@ -16,15 +17,16 @@ type Data = {
   district: SelectOption | undefined,
 }
 
-function Search() {
+export default function Search() {
   const [data, setData] = useState<Data>({
     year: { label: '110', value: '110' },
     city: undefined,
     district: undefined,
   });
   const [districtOptions, setDistrictOptions] = useState<SelectOption[]>([]);
-  const [chartData, setChartData] = useState(undefined);
-  const dataString = `${data?.year?.label} ${data?.city?.label} ${data?.district?.label}`;
+  const isBtnDisabled = !data.year?.value || !data.city?.value || !data.district?.value;
+  const navigate = useNavigate();
+  const { year, city, district } = useParams();
 
   const changeHandler = useCallback((val: SelectOption | undefined, type: string) => {
     setData((prev) => ({
@@ -35,24 +37,20 @@ function Search() {
   }, []);
 
   const submitHandler = async () => {
-    const url = `https://www.ris.gov.tw/rs-opendata/api/v1/datastore/ODRP019/${data.year?.value}?COUNTY=${data.city?.value}&TOWN=${data.district?.value}`;
-    const res = await fetch(url);
-    const { responseData } = await res.json();
-
-    const initialValue = 0;
-
-    const householdSingleMen = responseData.reduce((accumulator, currentValue) => accumulator + (+currentValue.household_single_m), initialValue);
-    const householdSingleWomen = responseData.reduce((accumulator, currentValue) => accumulator + (+currentValue.household_single_f), initialValue);
-    const householdOrdinaryMen = responseData.reduce((accumulator, currentValue) => accumulator + (+currentValue.household_ordinary_m), initialValue);
-    const householdOrdinaryWomen = responseData.reduce((accumulator, currentValue) => accumulator + (+currentValue.household_ordinary_f), initialValue);
-
-    setChartData(
-      {
-        householdSingle: { men: householdSingleMen, women: householdSingleWomen },
-        householdOrdinary: { men: householdOrdinaryMen, women: householdOrdinaryWomen },
-      },
-    );
+    navigate(`/${data.year?.label}/${data.city?.label}/${data.district?.label}`);
   };
+
+  useEffect(() => {
+    if (!year || !city || !district) {
+      return;
+    }
+
+    setData({
+      year: { label: year, value: year },
+      city: { label: city, value: city },
+      district: { label: district, value: district },
+    });
+  }, [year, city, district]);
 
   useEffect(() => {
     if (data.city?.value) {
@@ -64,9 +62,13 @@ function Search() {
   }, [data.city?.value]);
 
   return (
-    <div className=" flex-grow flex flex-col items-center">
-      <h2 className="text-3xl mb-12">人口數、戶數按戶別及性別統計</h2>
-      <div className="flex gap-3">
+    <div className={cn(
+      'flex-grow flex flex-col items-center',
+      'phone:block phone:p-1.5',
+    )}
+    >
+      <h2 className="text-3xl mb-12 phone:text-2xl phone:text-center">人口數、戶數按戶別及性別統計</h2>
+      <div className="flex gap-3 phone:flex-col">
         <Select
           selectType={yearSelectTypeObj}
           placeholder="請選擇年份"
@@ -80,6 +82,7 @@ function Search() {
           options={cityData}
           onChange={changeHandler}
           selectValue={data.city}
+          className="phone:w-full"
         />
         <Select
           selectType={districtSelectTypeObj}
@@ -87,26 +90,34 @@ function Search() {
           options={districtOptions}
           onChange={changeHandler}
           selectValue={data.district}
+          className="phone:w-full"
           disabled={data.city === undefined}
         />
         <button
-          className="w-20 h-9 pt-3 pb-3 pl-4 pr-4 flex justify-center items-center bg-myColor-gray rounded"
+          className={cn(
+            'w-20 h-9 pt-3 pb-3 pl-4 pr-4 flex justify-center items-center bg-myColor-gray rounded',
+            { 'bg-myColor-#651FFF': !isBtnDisabled },
+            'phone:w-full',
+          )}
           type="submit"
-          disabled={!data.year?.value || !data.city?.value || !data.district?.value}
+          disabled={isBtnDisabled}
           onClick={submitHandler}
         >
           SUBMIT
         </button>
       </div>
-      <div className="
-      relative mt-12 pt-2 pb-2 pl-3 pr-3 border rounded-2xl"
+      <div className={cn(
+        'relative mt-12 py-2 px-3 bg-white text-xs text-myColor-#651FFF text-center border border-myColor-#651FFF rounded-2xl w-20',
+        // 'before:block before:absolute before:top-1/2 before:left-1/2 before:content-[""] before:w-96 before:border before:border-myColor-#651FFF',
+        'phone: mx-auto',
+      )}
       >
         搜尋結果
       </div>
-      <Result chartData={chartData} chartTitle={dataString} />
-    </div>
+      <div id="result">
+        <Outlet />
+      </div>
+    </div >
 
   );
 }
-
-export default Search;

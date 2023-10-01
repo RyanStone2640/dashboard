@@ -1,16 +1,12 @@
 import Logo from './logo.tsx';
 import Search from './search.tsx';
 
-
-function Content() {
+export default function Content() {
   return (
-
-    <div className="mt-2 flex">
+    <div className=" mt-5 flex phone:max-w-sm phone:overflow-hidden">
       <Logo />
       <Search />
     </div>
 
   );
 }
-
-export default Content;

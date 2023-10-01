@@ -13,6 +13,7 @@ export type SelectProps = {
   selectType: SelectType
   onChange: OptionChange
   selectValue: SelectOption | undefined
+  className?: string
 }
 
 function SelectComponent(props: SelectProps) {
@@ -23,6 +24,7 @@ function SelectComponent(props: SelectProps) {
     selectType,
     onChange,
     selectValue,
+    className,
   } = props;
 
   const [toggle, setToggle] = useState(true);
@@ -54,6 +56,7 @@ function SelectComponent(props: SelectProps) {
         'focus:border-myColor-#651FFF focus:border-1 focus:before:text-myColor-#651FFF',
         'before:content-[attr(before-dynamic-value)]',
         { 'pointer-events-none border-myColor-#B6B6B6 text-myColor-#B6B6B6 before:text-myColor-#B6B6B6': disabled },
+        className,
       )}
 
     >
@@ -87,6 +90,7 @@ function SelectComponent(props: SelectProps) {
 SelectComponent.defaultProps = {
   options: [],
   disabled: false,
+  className: '',
 };
 
 const Select = memo(SelectComponent);

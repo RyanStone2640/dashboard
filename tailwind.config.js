@@ -1,9 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [
-    './index.html',
-    './src/**/*.{js,ts,jsx,tsx}',
-  ],
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
       colors: {
@@ -31,8 +28,13 @@ export default {
       maxWidth: {
         '10rem': '10rem',
       },
+      screens: {
+        phone: { max: '375px' },
+        tablet: { max: '640px' },
+        laptop: { max: '1024px' },
+        desktop: { max: '1280px' },
+      },
     },
   },
   plugins: [],
-
 };
