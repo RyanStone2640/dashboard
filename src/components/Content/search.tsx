@@ -108,7 +108,6 @@ export default function Search() {
       </div>
       <div className={cn(
         'relative mt-12 py-2 px-3 bg-white text-xs text-myColor-#651FFF text-center border border-myColor-#651FFF rounded-2xl w-20',
-        // 'before:block before:absolute before:top-1/2 before:left-1/2 before:content-[""] before:w-96 before:border before:border-myColor-#651FFF',
         'phone: mx-auto',
       )}
       >
@@ -117,7 +116,7 @@ export default function Search() {
       <div id="result">
         <Outlet />
       </div>
-    </div >
+    </div>
 
   );
 }

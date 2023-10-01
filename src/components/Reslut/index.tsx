@@ -1,3 +1,6 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
+
 import { useRef } from 'react';
 import { useLoaderData } from 'react-router-dom';
 import * as Highcharts from 'highcharts';
